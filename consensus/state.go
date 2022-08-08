@@ -1996,8 +1996,11 @@ func (cs *State) signAddVote(msgType types.SignedMsgType, hash []byte, header ty
 	for _, pubKey := range pubKeys {
 		// If the node not in the validator set, do nothing.
 		if !cs.Validators.HasAddress(pubKey.Address()) {
-			return nil
+			cs.Logger.Info("NODE NOT IN VALIDATOR SET", "address", pubKey.Address())
+			continue
+			//return nil
 		}
+
 
 		// TODO: pass pubKey to signVote
 		vote, err := cs.signVote(msgType, hash, header, pubKey)
@@ -2005,9 +2008,11 @@ func (cs *State) signAddVote(msgType types.SignedMsgType, hash []byte, header ty
 			cs.sendInternalMessage(msgInfo{&VoteMessage{vote}, ""})
 			cs.Logger.Info("Signed and pushed vote", "height", cs.Height, "round", cs.Round, "vote", vote, "err", err)
 			votes = append(votes, vote)
+		} else {
+			cs.Logger.Error("Error signing vote", "height", cs.Height, "round", cs.Round, "vote", vote, "err", err)	
 		}
 		//if !cs.replayMode {
-		cs.Logger.Error("Error signing vote", "height", cs.Height, "round", cs.Round, "vote", vote, "err", err)
+		//cs.Logger.Error("Error signing vote", "height", cs.Height, "round", cs.Round, "vote", vote, "err", err)
 		//}
 
 	}
