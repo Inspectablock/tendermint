@@ -1,5 +1,7 @@
 package consensus
 
+//Inspectablock1
+
 import (
 	"bytes"
 	"fmt"
