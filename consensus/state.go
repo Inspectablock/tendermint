@@ -963,11 +963,11 @@ func (cs *State) enterPropose(height int64, round int) {
 		}
 
 		if cs.isProposer(address) {
-			logger.Info("enterPropose: Our turn to propose")
+			logger.Info("enterPropose: Our turn to propose", "addr", address)
 			cs.decideProposal(height, round, pubKey)
 			return
 		} else {
-			logger.Info("enterPropose: Not our turn to propose")
+			logger.Info("enterPropose: Not our turn to propose", "addr", address)
 		}
 	}
 }
@@ -2008,10 +2008,10 @@ func (cs *State) signAddVote(msgType types.SignedMsgType, hash []byte, header ty
 		vote, err := cs.signVote(msgType, hash, header, pubKey)
 		if err == nil {
 			cs.sendInternalMessage(msgInfo{&VoteMessage{vote}, ""})
-			cs.Logger.Info("Signed and pushed vote", "height", cs.Height, "round", cs.Round, "vote", vote, "err", err)
+			cs.Logger.Info("Signed and pushed vote", "address", pubKey.Address(), "height", cs.Height, "round", cs.Round, "vote", vote, "err", err, "type", msgType)
 			votes = append(votes, vote)
 		} else {
-			cs.Logger.Error("Error signing vote", "height", cs.Height, "round", cs.Round, "vote", vote, "err", err)	
+			cs.Logger.Error("Error signing vote", "address", pubKey.Address(), "height", cs.Height, "round", cs.Round, "vote", vote, "err", err, "type", msgType)
 		}
 		//if !cs.replayMode {
 		//cs.Logger.Error("Error signing vote", "height", cs.Height, "round", cs.Round, "vote", vote, "err", err)
