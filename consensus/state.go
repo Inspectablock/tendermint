@@ -965,7 +965,7 @@ func (cs *State) enterPropose(height int64, round int) {
 		if cs.isProposer(address) {
 			logger.Info("enterPropose: Our turn to propose", "addr", address)
 			cs.decideProposal(height, round, pubKey)
-			return
+			continue
 		} else {
 			logger.Info("enterPropose: Not our turn to propose", "addr", address)
 		}
