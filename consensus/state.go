@@ -1,7 +1,5 @@
 package consensus
 
-//Inspectablock1
-
 import (
 	"bytes"
 	"fmt"
@@ -953,6 +951,7 @@ func (cs *State) enterPropose(height int64, round int) {
 		logger.Error("Error on retrival of pubkey", "err", err)
 		return
 	}
+	logger.Info("enterPropose: Patch Version Inspectblock2")
 	for _, pubKey := range pubKeys {
 		address := pubKey.Address()
 
