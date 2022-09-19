@@ -952,7 +952,7 @@ func (cs *State) enterPropose(height int64, round int) {
 		logger.Error("Error on retrival of pubkey", "err", err)
 		return
 	}
-	logger.Info("Patch Version Inspectblock3")
+	logger.Info("Patch Version Inspectblock4")
 	for _, pubKey := range pubKeys {
 		address := pubKey.Address()
 
