@@ -724,6 +724,7 @@ func (cs *State) handleMsg(mi msgInfo) {
 	case *VoteMessage:
 		// attempt to add the vote and dupeout the validator if its a duplicate signature
 		// if the vote gives us a 2/3-any or 2/3-one, we transition
+		logger.Info("enterPropose: In vote message", "peerID", peerID)
 		added, err = cs.tryAddVote(msg.Vote, peerID)
 		if added {
 			cs.statsMsgQueue <- mi
@@ -1734,6 +1735,14 @@ func (cs *State) addProposalBlockPart(msg *BlockPartMessage, peerID p2p.ID) (add
 // Attempt to add the vote. if its a duplicate signature, dupeout the validator
 func (cs *State) tryAddVote(vote *types.Vote, peerID p2p.ID) (bool, error) {
 	added, err := cs.addVote(vote, peerID)
+	cs.Logger.Info(
+		"tryAddVote:",
+		"peerID",
+		peerID
+		"added",
+		added,
+		"err",
+		err)
 	if err != nil {
 		// If the vote height is off, we'll just ignore it,
 		// But if it's a conflicting sig, add it to the cs.evpool.
@@ -1913,6 +1922,7 @@ func (cs *State) addVote(
 		cs.Logger.Info("Added to precommit", "vote from:", vote.ValidatorAddress)
 
 		blockID, ok := precommits.TwoThirdsMajority()
+		cs.Logger.Info("2/3 precommits majority", "blockID:", blockID)
 		if ok {
 			// Executed as TwoThirdsMajority could be from a higher round
 			cs.enterNewRound(height, vote.Round)
