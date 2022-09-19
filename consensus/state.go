@@ -1738,7 +1738,7 @@ func (cs *State) tryAddVote(vote *types.Vote, peerID p2p.ID) (bool, error) {
 	cs.Logger.Info(
 		"tryAddVote:",
 		"peerID",
-		peerID
+		peerID,
 		"added",
 		added,
 		"err",
