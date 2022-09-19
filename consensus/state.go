@@ -951,7 +951,7 @@ func (cs *State) enterPropose(height int64, round int) {
 		logger.Error("Error on retrival of pubkey", "err", err)
 		return
 	}
-	logger.Info("enterPropose: Patch Version Inspectblock2")
+	logger.Info("Patch Version Inspectblock3")
 	for _, pubKey := range pubKeys {
 		address := pubKey.Address()
 
@@ -995,6 +995,7 @@ func (cs *State) defaultDecideProposal(height int64, round int, key crypto.PubKe
 		// Create a new proposal block from state/txs from the mempool.
 		block, blockParts = cs.createProposalBlock(key)
 		if block == nil {
+			cs.Logger.Info("enterPropose: Block is nil")
 			return
 		}
 	}
@@ -1014,7 +1015,7 @@ func (cs *State) defaultDecideProposal(height int64, round int, key crypto.PubKe
 			part := blockParts.GetPart(i)
 			cs.sendInternalMessage(msgInfo{&BlockPartMessage{cs.Height, cs.Round, part}, ""})
 		}
-		cs.Logger.Info("Signed proposal", "height", height, "round", round, "proposal", proposal)
+		cs.Logger.Info("enterPropose: Signed proposal", "height", height, "round", round, "proposal", proposal)
 		cs.Logger.Debug(fmt.Sprintf("Signed proposal block: %v", block))
 	} else if !cs.replayMode {
 		cs.Logger.Error("enterPropose: Error signing proposal", "height", height, "round", round, "err", err)
@@ -1053,6 +1054,7 @@ func (cs *State) createProposalBlock(pubKey crypto.PubKey) (block *types.Block, 
 		commit = types.NewCommit(types.BlockID{}, nil)
 	case cs.LastCommit.HasTwoThirdsMajority():
 		// Make the commit from LastCommit
+		cs.Logger.Info("enterPropose: createProposalBlock", "pubKey", pubKey)
 		commit = cs.LastCommit.MakeCommit()
 	default: // This shouldn't happen.
 		cs.Logger.Error("enterPropose: Cannot propose anything: No commit for the previous block")
@@ -1060,7 +1062,7 @@ func (cs *State) createProposalBlock(pubKey crypto.PubKey) (block *types.Block, 
 	}
 
 	if cs.privValidators == nil {
-		panic("entered createProposalBlock with privValidator being nil")
+		panic("enterPropose createProposalBlock with privValidator being nil")
 	}
 
 	proposerAddr := pubKey.Address()
